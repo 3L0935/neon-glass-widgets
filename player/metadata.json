@@ -1,0 +1,15 @@
+{
+    "KPlugin": {
+        "Authors": [{ "Name": "3L0_", "Email": "46246017+3L0935@users.noreply.github.com" }],
+        "Category": "Multimedia",
+        "Description": "Now-playing card for any MPRIS player (music apps, browsers…) on a neon glass card, with a compact taskbar version",
+        "Icon": "media-playback-start",
+        "Id": "org.neonglass.player",
+        "License": "MIT",
+        "Name": "Neon Glass Player",
+        "Version": "1.0.0",
+        "Website": "https://github.com/3L0935/neon-glass-widgets"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "KPackageStructure": "Plasma/Applet"
+}

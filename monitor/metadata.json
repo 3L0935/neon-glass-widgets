@@ -1,0 +1,15 @@
+{
+    "KPlugin": {
+        "Authors": [{ "Name": "3L0_", "Email": "46246017+3L0935@users.noreply.github.com" }],
+        "Category": "System Information",
+        "Description": "CPU/GPU rings, load history and RAM/VRAM bars on a neon glass card",
+        "Icon": "utilities-system-monitor",
+        "Id": "org.neonglass.monitor",
+        "License": "MIT",
+        "Name": "Neon Glass Monitor",
+        "Version": "1.0.0",
+        "Website": "https://github.com/3L0935/neon-glass-widgets"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "KPackageStructure": "Plasma/Applet"
+}
