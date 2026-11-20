@@ -69,6 +69,9 @@ Item {
                 ColumnLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    // fill the space left by the cover instead of growing to the title's width
+                    Layout.preferredWidth: 1
+                    Layout.minimumWidth: 0
                     spacing: 0
 
                     Text {
@@ -170,19 +173,23 @@ Item {
 
             // playlists to play (left) │ tools (right): music-cli only
             RowLayout {
+                id: shortcuts
                 visible: card.mc
                 Layout.fillWidth: true
-                spacing: 6 * card.s
-                Text { text: "play"; color: card.pal.faint; font { family: card.pal.mono; pixelSize: 10 * card.s; letterSpacing: 1.2 } }
-                Item { Layout.preferredWidth: 2 * card.s }
+                Layout.maximumWidth: parent.width
+                spacing: 5 * card.s
+                Text {
+                    visible: card.width > 640 * card.s
+                    text: "play"; color: card.pal.faint
+                    font { family: card.pal.mono; pixelSize: 10 * card.s; letterSpacing: 1.2 }
+                }
                 Chip { icon: "view-media-playlist"; label: "all music"; onTap: root.playShortcut("all") }
                 Chip { icon: "starred";             label: "discover";  onTap: root.playShortcut("discover") }
                 Chip { icon: "media-album-track";   label: "supermix";  onTap: root.playShortcut("supermix") }
                 Chip { icon: "love";                label: "likes";     onTap: root.playShortcut("liked") }
                 Chip { icon: "view-more-horizontal-symbolic"; label: "more"; onTap: { card.moreOpen = true; root.loadPlaylists() } }
-                Item { Layout.fillWidth: true }
+                Item { Layout.fillWidth: true; Layout.minimumWidth: 0 }
                 Rectangle { Layout.preferredWidth: 1; Layout.preferredHeight: 14 * card.s; color: card.pal.edge }
-                Item { Layout.preferredWidth: 2 * card.s }
                 Tool { icon: "view-refresh";       label: "refresh"; busy: root.refreshing; onTap: root.refreshMixes() }
                 Tool { icon: "utilities-terminal"; label: "tui";     onTap: root.openTui() }
             }
@@ -425,7 +432,7 @@ Item {
         property string icon
         property string label
         signal tap()
-        implicitWidth: chipRow.implicitWidth + 12 * card.s
+        implicitWidth: chipRow.implicitWidth + 10 * card.s
         implicitHeight: 20 * card.s
         radius: 5 * card.s
         color: cma.containsMouse ? card.pal.withAlpha(card.pal.accent, 0.14) : "transparent"
@@ -434,10 +441,10 @@ Item {
         Row {
             id: chipRow
             anchors.centerIn: parent
-            spacing: 4 * card.s
+            spacing: 3 * card.s
             NIcon {
                 anchors.verticalCenter: parent.verticalCenter
-                width: 12 * card.s; height: width
+                width: 11 * card.s; height: width
                 name: chip.icon
                 color: cma.containsMouse ? card.pal.accent : card.pal.accent2
             }
@@ -457,17 +464,17 @@ Item {
         property string label
         property bool busy: false
         signal tap()
-        implicitWidth: toolRow.implicitWidth + 10 * card.s
+        implicitWidth: toolRow.implicitWidth + 8 * card.s
         implicitHeight: 20 * card.s
         radius: 5 * card.s
         color: tma.containsMouse ? Qt.rgba(1, 1, 1, 0.06) : "transparent"
         Row {
             id: toolRow
             anchors.centerIn: parent
-            spacing: 4 * card.s
+            spacing: 3 * card.s
             NIcon {
                 anchors.verticalCenter: parent.verticalCenter
-                width: 12 * card.s; height: width
+                width: 11 * card.s; height: width
                 name: tool.icon; color: card.pal.accent
             }
             Text {
