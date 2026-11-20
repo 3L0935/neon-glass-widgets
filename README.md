@@ -1,6 +1,6 @@
 # Neon Glass widgets
 
-Two KDE Plasma 6 widgets with a dark glass look and thin neon accents. Every color, the fonts and the glass are configurable from the widget settings, no code to edit.
+Two KDE Plasma 6 widgets with a dark glass look and thin neon accents. They pair with the [NeonGlass icon theme](https://github.com/3L0935/neon-glass-icons). Every color, the fonts and the glass are configurable from the widget settings, no code to edit.
 
 | Neon Glass Monitor | Neon Glass Player |
 |---|---|
