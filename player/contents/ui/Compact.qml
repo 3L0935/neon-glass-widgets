@@ -18,7 +18,7 @@ Item {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton
         onClicked: (m) => {
-            if (m.button === Qt.MiddleButton) root.player && root.player.PlayPause()
+            if (m.button === Qt.MiddleButton) root.togglePlay()
             else root.expanded = !root.expanded
         }
         onWheel: (w) => root.wheelVolume(w, true)
@@ -97,10 +97,10 @@ Item {
                     MouseArea {
                         id: bma; anchors.fill: parent; anchors.margins: -4; hoverEnabled: true
                         onClicked: {
+                            if (parent.modelData.a === "pp" && (root.player || root.canStartCli)) { root.togglePlay(); return }
                             if (!root.player) { root.expanded = true; return }
                             if (parent.modelData.a === "prev") root.player.Previous()
-                            else if (parent.modelData.a === "next") root.next()
-                            else root.player.PlayPause()
+                            else root.next()
                         }
                     }
                 }

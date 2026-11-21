@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """neonglass-player: music-cli helper used by the Neon Glass Player widget.
 
+  neonglass-player start                     start music-cli (resume the last track)
+  neonglass-player quit                      close the TUI and stop music-cli
   neonglass-player play all|radar|discover|supermix|newrelease|liked
   neonglass-player play-id PLAYLIST_ID       play any library playlist
   neonglass-player playlists                 every library playlist, grouped (JSON)
@@ -192,8 +194,77 @@ def refresh():
     return 1
 
 
+def tui_pids():
+    """PIDs of running music-cli TUIs (the launcher run with no subcommand)."""
+    import os
+
+    out = []
+    for d in Path("/proc").iterdir():
+        if not d.name.isdigit() or int(d.name) == os.getpid():
+            continue
+        try:
+            argv = (d / "cmdline").read_bytes().split(b"\0")[:-1]
+        except OSError:
+            continue
+        argv = [a.decode(errors="replace") for a in argv]
+        if len(argv) >= 2 and argv[1].endswith("/music-cli") and all(a.startswith("-") for a in argv[2:]):
+            out.append(int(d.name))
+    return out
+
+
+def start_cli():
+    """Start the daemon and resume the last track (or All Music when history is empty)."""
+    try:
+        r = subprocess.run(["music-cli", "resume"], stdin=subprocess.DEVNULL,
+                           capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        return 0   # still resolving: the widget keeps showing "loading"
+    if r.returncode == 0:
+        return 0
+    msg = (r.stderr or r.stdout).strip()
+    if "nothing to resume" in msg or "history is empty" in msg:
+        return play("all")
+    print("✗ " + (msg.splitlines() or ["music-cli did not start"])[-1][:80])
+    return 1
+
+
+def quit_cli():
+    """Close the TUIs (so they don't respawn the daemon), then stop the daemon."""
+    import os
+    import signal
+    import time
+    from music_cli.ipc import send_request
+
+    tuis = tui_pids()
+    for pid in tuis:
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except OSError:
+            pass
+    deadline = time.monotonic() + 3
+    while tuis and time.monotonic() < deadline:
+        tuis = [p for p in tuis if Path(f"/proc/{p}").exists()]
+        time.sleep(0.1)
+    for pid in tuis:
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except OSError:
+            pass
+    try:
+        send_request({"cmd": "quit"}, timeout=3.0)
+    except Exception:
+        print("music-cli is not running")
+        return 0
+    print("■ music-cli stopped")
+    return 0
+
+
 def main(argv):
     cmd, args = (argv[0], argv[1:]) if argv else ("", [])
+    if argv[:1] == ["start"]:
+        return start_cli()
+    if argv[:1] == ["quit"]:
+        return quit_cli()
     if cmd == "play" and args:
         return play(args[0])
     if cmd == "play-id" and args:

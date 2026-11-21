@@ -20,7 +20,7 @@ Item {
         "view-more-horizontal-symbolic": 0xF01D8, "view-refresh": 0xF0450,
         "utilities-terminal": 0xF018D, "audio-volume-high": 0xF057E,
         "audio-x-generic": 0xF0387, "go-previous": 0xF004D, "window-close": 0xF0156,
-        "network-wireless-hotspot": 0xF0437
+        "network-wireless-hotspot": 0xF0437, "system-shutdown": 0xF0425
     })
     readonly property bool glyph: root.useNerdFont && glyphs[name] !== undefined
 

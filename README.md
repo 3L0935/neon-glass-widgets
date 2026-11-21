@@ -59,7 +59,8 @@ Right click a widget → **Configure…**
 - **Like** the current track, and **reshuffle** the up-next queue without stopping the song.
 - **Up next**: the next tracks of the queue.
 - **Loading feedback** while music-cli downloads the next track.
-- **refresh** runs `neonglass-mix`, and **tui** opens music-cli in a terminal.
+- **refresh** runs `neonglass-mix`, **tui** opens music-cli in a terminal, and **quit** closes the TUI and stops music-cli.
+- When nothing is playing, **▶** starts music-cli (it resumes the last track, or plays All Music on a fresh install) and the playlist shortcuts stay available.
 
 music-cli has no MPRIS support on Linux, so the extras add it. Your media keys and KDE's media controls then work with music-cli too.
 

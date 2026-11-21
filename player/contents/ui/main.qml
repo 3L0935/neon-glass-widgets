@@ -107,6 +107,8 @@ PlasmoidItem {
 
     // ── music-cli integration (optional, see extras/music-cli) ───────
     readonly property bool isMusicCli: cfg.musicCli && identity === "music-cli"
+    // nothing else is playing: music-cli can be started from the widget
+    readonly property bool canStartCli: cfg.musicCli && !isMusicCli && !playing
     readonly property string helper: cfg.helperCommand || "neonglass-player"
     readonly property string videoId: {
         const m = /\/vi\/([^/]+)\//.exec(art || "")
@@ -137,6 +139,12 @@ PlasmoidItem {
         if (refreshing) return
         refreshing = true; say("refreshing…"); sh.run(helper + " refresh")
     }
+    function togglePlay() {
+        if (player && (has || !canStartCli)) player.PlayPause()
+        else if (canStartCli) startCli()
+    }
+    function startCli() { if (!loading) { startLoading("music-cli"); sh.run(helper + " start") } }
+    function quitCli() { loading = false; sh.run(helper + " quit") }
     function openTui() { sh.run("(" + (cfg.tuiCommand || "kitty -e music-cli") + ") >/dev/null 2>&1 &") }
 
     P5Support.DataSource {
@@ -157,6 +165,8 @@ PlasmoidItem {
                 try { root.allPlaylists = JSON.parse(out) } catch (e) { root.say("✗ could not list playlists") }
                 return
             }
+            if (is("start")) { if (out) { root.loading = false; root.say(out) } return }
+            if (is("quit")) { root.loading = false; root.upNext = []; root.queueCount = 0; if (out) root.say(out); return }
             if (is("refresh")) { root.refreshing = false; root.say(out); root.refreshQueue(); return }
             if (is("play")) { if (out.indexOf("▶") === 0) root.startLoading(out.slice(2)); else if (out) root.say(out); return }
             if (is("like")) root.liked = out.indexOf("♥") === 0

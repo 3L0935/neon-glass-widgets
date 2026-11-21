@@ -16,6 +16,8 @@ Item {
     readonly property var pal: root.pal
     readonly property real s: Math.max(0.6, Math.min(width / 560, height / 232))
     readonly property bool mc: root.isMusicCli
+    // the playlist row also shows while music-cli is stopped, to start it
+    readonly property bool mcRow: root.isMusicCli || root.canStartCli
     property bool moreOpen: false
 
     GlassCard {
@@ -61,7 +63,7 @@ Item {
 
                 Cover {
                     // sized from the card, not the row, to avoid a layout loop
-                    Layout.preferredWidth: Math.min(card.height - (card.mc ? 72 : 46) * card.s, card.width * 0.34)
+                    Layout.preferredWidth: Math.min(card.height - (card.mcRow ? 72 : 46) * card.s, card.width * 0.34)
                     Layout.preferredHeight: Layout.preferredWidth
                     Layout.alignment: Qt.AlignVCenter
                 }
@@ -85,7 +87,7 @@ Item {
                     Text {
                         Layout.fillWidth: true
                         Layout.topMargin: 2 * card.s
-                        text: root.has ? root.artist : (card.mc ? "pick a playlist below ↓" : "start something in a music app")
+                        text: root.has ? root.artist : (card.mcRow ? (root.canStartCli && !root.loading ? "▶ to start music-cli, or pick a playlist ↓" : "pick a playlist below ↓") : "start something in a music app")
                         color: card.pal.muted
                         elide: Text.ElideRight; maximumLineCount: 1
                         font { family: card.pal.sans; pixelSize: 12.5 * card.s }
@@ -132,7 +134,7 @@ Item {
                                 name: root.playing ? "media-playback-pause" : "media-playback-start"
                                 color: Qt.darker(card.pal.glass, 2.5)
                             }
-                            MouseArea { id: playMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.player && root.player.PlayPause() }
+                            MouseArea { id: playMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.togglePlay() }
                         }
                         IconButton { icon: "media-skip-forward"; tip: "Next"; on: root.loading; onColor: card.pal.accent; onTap: root.next() }
                         IconButton {
@@ -174,7 +176,7 @@ Item {
             // playlists to play (left) │ tools (right): music-cli only
             RowLayout {
                 id: shortcuts
-                visible: card.mc
+                visible: card.mcRow
                 Layout.fillWidth: true
                 Layout.maximumWidth: parent.width
                 spacing: 5 * card.s
@@ -192,6 +194,7 @@ Item {
                 Rectangle { Layout.preferredWidth: 1; Layout.preferredHeight: 14 * card.s; color: card.pal.edge }
                 Tool { icon: "view-refresh";       label: "refresh"; busy: root.refreshing; onTap: root.refreshMixes() }
                 Tool { icon: "utilities-terminal"; label: "tui";     onTap: root.openTui() }
+                Tool { visible: card.mc; icon: "system-shutdown"; label: "quit"; onTap: root.quitCli() }
             }
         }
 
