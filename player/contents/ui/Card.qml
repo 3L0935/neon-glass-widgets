@@ -8,9 +8,10 @@ import org.kde.kirigami as Kirigami
 // Desktop card (also used as the taskbar popup).
 Item {
     id: card
-    Layout.preferredWidth: 560
+    // the playlist/tools row must fit (it sets the width of the taskbar popup)
+    Layout.preferredWidth: Math.max(560, Layout.minimumWidth)
     Layout.preferredHeight: 232
-    Layout.minimumWidth: 420
+    Layout.minimumWidth: mcRow ? Math.max(420, Math.ceil(shortcuts.implicitWidth + 34 * s)) : 420
     Layout.minimumHeight: 196
 
     readonly property var pal: root.pal
@@ -25,6 +26,7 @@ Item {
         pal: card.pal
         s: card.s
         blurBehind: root.onDesktop
+        bare: !root.onDesktop
 
         leftLabel: Text {
             textFormat: Text.StyledText

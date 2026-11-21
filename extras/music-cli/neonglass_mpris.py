@@ -227,7 +227,10 @@ class MprisControl:
             pass
         elif method == "PlayPause":
             self._queue("toggle")
-        elif method in ("Play", "Pause", "Next", "Previous", "Stop"):
+        elif method == "Previous":
+            # PREV_SEEK of the import hook: restart, or back one track (see there)
+            self._queue("seek", -1.0)
+        elif method in ("Play", "Pause", "Next", "Stop"):
             self._queue(method.lower())
         elif method == "Seek":
             off = params.unpack()[0] / 1e6

@@ -18,6 +18,9 @@ Item {
     property alias leftLabel: leftSlot.data
     property alias rightLabel: rightSlot.data
     property bool rightLabelVisible: true
+    // no frame or fill of its own: inside a panel popup, Plasma's dialog already
+    // draws the background, and a second rounded frame inside it looks boxed in
+    property bool bare: false
     default property alias content: body.data
 
     readonly property real inset: 9 * s   // the frame starts this far down, under the labels
@@ -32,6 +35,7 @@ Item {
     Timer { interval: 1500; running: card.imageBlur; repeat: true; triggeredOnStart: true; onTriggered: card.updatePos() }
     onWidthChanged: { updatePos(); frame.requestPaint() }
     onHeightChanged: { updatePos(); frame.requestPaint() }
+    onBareChanged: frame.requestPaint()
 
     Item {
         id: blurLayer
@@ -84,6 +88,7 @@ Item {
             const ctx = getContext("2d"), s = card.s
             const top = card.inset, r = card.pal.radius * s, w = width - 1, h = height - 1
             ctx.reset()
+            if (card.bare) return
             function rr(x, y, ww, hh, rad) {
                 ctx.beginPath()
                 ctx.moveTo(x + rad, y); ctx.lineTo(x + ww - rad, y); ctx.arcTo(x + ww, y, x + ww, y + rad, rad)

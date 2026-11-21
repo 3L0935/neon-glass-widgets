@@ -5,6 +5,8 @@ music-cli is not modified on disk: a meta-path import hook patches it as it load
     (neonglass_mpris), so media keys, KDE and the Neon Glass Player see it.
   - music_cli.session: queue_add(video_id=SHUFFLE_TOKEN) reshuffles the up-next
     queue in place (used by `neonglass-player reshuffle`).
+  - music_cli.session: a real "previous track" (MPRIS Previous /
+    media key): restart after 3 s, else back one track.
   - music_cli.tui.app: adds a "neon-glass" Textual theme (Ctrl+P → Theme).
 A music-cli upgrade wipes these files: run extras/music-cli/install.sh again.
 """
@@ -94,9 +96,87 @@ def _patch_session(mod):
     cls.queue_add = queue_add
 
 
+PREV_RESTART_AFTER = 3.0   # seconds: past this, "previous" restarts the track
+# The daemon runs as __main__ (python -m), so its media-key dispatch can't be
+# patched: the MPRIS Previous is sent as a seek to this position instead.
+PREV_SEEK = -1.0
+
+
+def _patch_session_back(mod):
+    """A real "previous track": music-cli itself only restarts the current one.
+
+    Every play is pushed on a back stack (the play history fills it after a
+    daemon restart). previous_track() restarts the track once it has played
+    a few seconds, else plays the one before and puts the current track back
+    at the head of the up-next queue, so Next returns to it. A double click
+    on ⏮ therefore always lands on the previous track.
+    """
+    cls = mod.PlaybackSession
+    record = cls.record
+
+    def record_with_back(self, stream):
+        back = self.__dict__.setdefault("_ng_back", [])
+        cur = self.__dict__.get("_ng_cur")
+        if cur is not None and cur[0] != stream.video_id and not self.__dict__.get("_ng_rewinding"):
+            back.append(cur)
+            del back[:-100]
+        self._ng_cur = (stream.video_id, stream.title, list(stream.artists))
+        return record(self, stream)
+
+    def previous_track(self):
+        current = self.client.current
+        if current is None:
+            return None
+        # a double click: the player may still report the old position
+        import time
+
+        just_restarted = time.monotonic() - self.__dict__.get("_ng_restart_at", 0) < 2.0
+        if float(self.client.player.position or 0) > PREV_RESTART_AFTER and not just_restarted:
+            self._ng_restart_at = time.monotonic()
+            return seek(self, position=0.0)
+        back = self.__dict__.setdefault("_ng_back", [])
+        while back and back[-1][0] == current.video_id:
+            back.pop()
+        if back:
+            prev = back.pop()
+        else:   # fresh daemon: fall back to the play history
+            older = [t for t in self._history.recent(20) if t.video_id != current.video_id]
+            if not older:
+                return seek(self, position=0.0)
+            prev = (older[0].video_id, older[0].title, list(older[0].artists))
+        from music_cli.yt.extract import PlaylistTrack
+
+        here = PlaylistTrack(video_id=current.video_id, title=current.title, artists=list(current.artists))
+        self._ng_rewinding = True
+        try:
+            if self._downloads_context:
+                self.play_download(prev[0], prev[1])
+            else:
+                self.client.play_video(prev[0], prev[1])
+                self.record(self.client.current)
+                (self._next_queue if self._next_queue else self.client.queue).insert(0, here)
+        except Exception:
+            back.append(prev)
+            raise
+        finally:
+            self._ng_rewinding = False
+
+    seek = cls.seek
+
+    def seek_or_previous(self, *args, **kwargs):
+        if kwargs.get("position") == PREV_SEEK:
+            return previous_track(self)
+        return seek(self, *args, **kwargs)
+
+    cls.record = record_with_back
+    cls.previous_track = previous_track
+    cls.seek = seek_or_previous
+
+
 def _patch(mod):
     if mod.__name__ == "music_cli.session":
-        return _patch_session(mod)
+        _patch_session(mod)
+        return _patch_session_back(mod)
     if mod.__name__ == "music_cli.player":
         return _patch_player(mod)
     cls = getattr(mod, "MusicTUI", None)
