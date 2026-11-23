@@ -42,6 +42,7 @@ Right click a widget → **Configure…**
 - Title, and the player switcher shown when several players run (`auto` follows the one that's playing).
 - **Icons**: automatic (Nerd Font glyphs if a Nerd Font is installed, else your icon theme), Nerd Font only, or icon theme only.
 - **Volume**: mouse wheel step, and a fine step for Shift + wheel.
+- **Glass frame behind the panel version**: on by default. Turn it off when the panel already draws a background around the widget (Panel Colorizer islands, for example).
 
 ## Player tips
 
