@@ -23,7 +23,10 @@ Item {
     property bool bare: false
     default property alias content: body.data
 
-    readonly property real inset: 9 * s   // the frame starts this far down, under the labels
+    // the labels, frame inset and corners use fixed sizes (not the widget scale),
+    // so every Neon Glass widget looks the same next to the others
+    readonly property real lk: pal.labelSize / 11.5
+    readonly property real inset: 9 * lk   // the frame starts this far down, under the labels
     readonly property bool imageBlur: blurBehind && pal.backgroundImage != ""
 
     // where the card sits on its screen, polled cheaply so moving it keeps the illusion
@@ -71,7 +74,7 @@ Item {
         id: blurMask
         width: blurLayer.width; height: blurLayer.height
         layer.enabled: true; visible: false
-        Rectangle { anchors.fill: parent; radius: card.pal.radius * card.s; color: "black" }
+        Rectangle { anchors.fill: parent; radius: card.pal.radius; color: "black" }
     }
 
     Canvas {
@@ -86,7 +89,7 @@ Item {
         }
         onPaint: {
             const ctx = getContext("2d"), s = card.s
-            const top = card.inset, r = card.pal.radius * s, w = width - 1, h = height - 1
+            const top = card.inset, r = card.pal.radius, w = width - 1, h = height - 1
             ctx.reset()
             if (card.bare) return
             function rr(x, y, ww, hh, rad) {
@@ -107,18 +110,18 @@ Item {
 
     Item {
         id: leftBox
-        x: 14 * card.s; y: 0
-        width: leftSlot.childrenRect.width > 0 ? leftSlot.childrenRect.width + 16 * card.s : 0
-        height: 18 * card.s
+        x: 14 * card.lk; y: 0
+        width: leftSlot.childrenRect.width > 0 ? leftSlot.childrenRect.width + 16 * card.lk : 0
+        height: 18 * card.lk
         onWidthChanged: frame.requestPaint()
         Item { id: leftSlot; anchors.centerIn: parent; width: childrenRect.width; height: childrenRect.height }
     }
     Item {
         id: rightBox
         visible: card.rightLabelVisible && rightSlot.childrenRect.width > 0
-        x: card.width - width - 14 * card.s; y: 0
-        width: rightSlot.childrenRect.width + 16 * card.s
-        height: 18 * card.s
+        x: card.width - width - 14 * card.lk; y: 0
+        width: rightSlot.childrenRect.width + 16 * card.lk
+        height: 18 * card.lk
         onWidthChanged: frame.requestPaint()
         onXChanged: frame.requestPaint()
         onVisibleChanged: frame.requestPaint()

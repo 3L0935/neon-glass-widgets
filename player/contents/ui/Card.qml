@@ -32,7 +32,7 @@ Item {
             textFormat: Text.StyledText
             text: root.cfg.title + (root.identity ? " <font color='" + card.pal.faint + "'>· </font><font color='" + card.pal.muted + "'>" + root.identity.toLowerCase() + "</font>" : "")
             color: card.pal.accent3
-            font { family: card.pal.mono; pixelSize: 11.5 * card.s; letterSpacing: 0.6 }
+            font { family: card.pal.mono; pixelSize: card.pal.labelSize; letterSpacing: 0.6 }
         }
         rightLabelVisible: root.cfg.showSourceSwitcher && root.players.length > 1 && !card.moreOpen
         rightLabel: Row {
@@ -44,7 +44,7 @@ Item {
                     readonly property bool on: mpris.currentIndex === modelData.index
                     text: modelData.identity.toLowerCase()
                     color: on ? card.pal.accent : (srcMa.containsMouse ? card.pal.text : card.pal.faint)
-                    font { family: card.pal.mono; pixelSize: 10.5 * card.s; bold: on }
+                    font { family: card.pal.mono; pixelSize: card.pal.labelSize * 0.92; bold: on }
                     MouseArea { id: srcMa; anchors.fill: parent; anchors.margins: -3; hoverEnabled: true; onClicked: mpris.currentIndex = parent.modelData.index }
                 }
             }
@@ -84,7 +84,7 @@ Item {
                         color: root.has ? card.pal.text : card.pal.muted
                         wrapMode: Text.Wrap; elide: Text.ElideRight; maximumLineCount: 2
                         lineHeight: 1.05
-                        font { family: card.pal.sans; pixelSize: 15.5 * card.s; weight: Font.DemiBold }
+                        font { family: card.pal.sans; pixelSize: 15.5 * card.pal.ts; weight: Font.DemiBold }
                     }
                     Text {
                         Layout.fillWidth: true
@@ -92,7 +92,7 @@ Item {
                         text: root.has ? root.artist : (card.mcRow ? (root.canStartCli && !root.loading ? "▶ to start music-cli, or pick a playlist ↓" : "pick a playlist below ↓") : "start something in a music app")
                         color: card.pal.muted
                         elide: Text.ElideRight; maximumLineCount: 1
-                        font { family: card.pal.sans; pixelSize: 12.5 * card.s }
+                        font { family: card.pal.sans; pixelSize: 12.5 * card.pal.ts }
                     }
                     UpNext { Layout.fillWidth: true; Layout.fillHeight: true; Layout.topMargin: 8 * card.s; Layout.bottomMargin: 6 * card.s }
 
@@ -100,7 +100,7 @@ Item {
                     RowLayout {
                         Layout.fillWidth: true
                         Layout.topMargin: 3 * card.s
-                        Text { text: root.has ? root.fmt(root.position) : "-:--"; color: card.pal.muted; font { family: card.pal.mono; pixelSize: 10.5 * card.s } }
+                        Text { text: root.has ? root.fmt(root.position) : "-:--"; color: card.pal.muted; font { family: card.pal.mono; pixelSize: 10.5 * card.pal.ts } }
                         Text {
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
@@ -108,9 +108,9 @@ Item {
                             color: card.pal.accent; elide: Text.ElideRight
                             opacity: (root.loading || root.toast) ? 1 : 0
                             Behavior on opacity { NumberAnimation { duration: 250 } }
-                            font { family: card.pal.mono; pixelSize: 10.5 * card.s }
+                            font { family: card.pal.mono; pixelSize: 10.5 * card.pal.ts }
                         }
-                        Text { text: root.length > 0 ? root.fmt(root.length) : "-:--"; color: card.pal.muted; font { family: card.pal.mono; pixelSize: 10.5 * card.s } }
+                        Text { text: root.length > 0 ? root.fmt(root.length) : "-:--"; color: card.pal.muted; font { family: card.pal.mono; pixelSize: 10.5 * card.pal.ts } }
                     }
 
                     // transport
@@ -161,7 +161,7 @@ Item {
                                 Text {
                                     text: Math.round((root.player ? root.player.volume : 0) * 100)
                                     color: volMa.containsMouse ? card.pal.text : card.pal.muted
-                                    font { family: card.pal.mono; pixelSize: 11 * card.s }
+                                    font { family: card.pal.mono; pixelSize: 11 * card.pal.ts }
                                 }
                             }
                             MouseArea {
@@ -185,7 +185,7 @@ Item {
                 Text {
                     visible: card.width > 640 * card.s
                     text: "play"; color: card.pal.faint
-                    font { family: card.pal.mono; pixelSize: 10 * card.s; letterSpacing: 1.2 }
+                    font { family: card.pal.mono; pixelSize: 10 * card.pal.ts; letterSpacing: 1.2 }
                 }
                 Chip { icon: "view-media-playlist"; label: "all music"; onTap: root.playShortcut("all") }
                 Chip { icon: "starred";             label: "discover";  onTap: root.playShortcut("discover") }
@@ -260,7 +260,7 @@ Item {
             Text {
                 text: "up next" + (root.queueCount ? "  ·  " + root.queueCount + " queued" : "")
                 color: card.pal.faint
-                font { family: card.pal.mono; pixelSize: 10 * card.s; letterSpacing: 1.2 }
+                font { family: card.pal.mono; pixelSize: 10 * card.pal.ts; letterSpacing: 1.2 }
             }
             Repeater {
                 model: root.upNext.slice(0, upBox.fit)
@@ -274,7 +274,7 @@ Item {
                           + esc(modelData.title) + (modelData.artist ? " <font color='" + card.pal.faint + "'>· " + esc(modelData.artist) + "</font>" : "")
                     color: index === 0 ? card.pal.text : card.pal.muted
                     opacity: 1 - index * 0.18
-                    font { family: card.pal.sans; pixelSize: 12 * card.s }
+                    font { family: card.pal.sans; pixelSize: 12 * card.pal.ts }
                     function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;") }
                 }
             }
@@ -362,10 +362,10 @@ Item {
             id: head
             anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12 * card.s }
             IconButton { icon: "go-previous"; tip: "Back"; onTap: card.moreOpen = false }
-            Text { text: "playlists"; color: card.pal.text; font { family: card.pal.mono; pixelSize: 12 * card.s; letterSpacing: 0.6 } }
+            Text { text: "playlists"; color: card.pal.text; font { family: card.pal.mono; pixelSize: 12 * card.pal.ts; letterSpacing: 0.6 } }
             Text {
                 text: root.playlistsLoading ? "loading…" : root.allPlaylists.length + " in library"
-                color: card.pal.faint; font { family: card.pal.mono; pixelSize: 10 * card.s }
+                color: card.pal.faint; font { family: card.pal.mono; pixelSize: 10 * card.pal.ts }
             }
             Item { Layout.fillWidth: true }
             IconButton { icon: "window-close"; tip: "Close"; onTap: card.moreOpen = false }
@@ -394,7 +394,7 @@ Item {
                         visible: items.length > 0
                         width: groups.width
                         spacing: 5 * card.s
-                        Text { text: group.modelData.label; color: card.pal.faint; font { family: card.pal.mono; pixelSize: 10 * card.s; letterSpacing: 1.2 } }
+                        Text { text: group.modelData.label; color: card.pal.faint; font { family: card.pal.mono; pixelSize: 10 * card.pal.ts; letterSpacing: 1.2 } }
                         Flow {
                             id: flow
                             width: parent.width
@@ -456,7 +456,7 @@ Item {
             Text {
                 text: chip.label
                 color: cma.containsMouse ? card.pal.text : card.pal.muted
-                font { family: card.pal.mono; pixelSize: 10.5 * card.s }
+                font { family: card.pal.mono; pixelSize: 10.5 * card.pal.ts }
             }
         }
         MouseArea { id: cma; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: chip.tap() }
@@ -485,7 +485,7 @@ Item {
             Text {
                 text: tool.label
                 color: tma.containsMouse ? card.pal.text : card.pal.muted
-                font { family: card.pal.mono; pixelSize: 10.5 * card.s }
+                font { family: card.pal.mono; pixelSize: 10.5 * card.pal.ts }
             }
             SequentialAnimation on opacity {
                 running: tool.busy; loops: Animation.Infinite
@@ -528,7 +528,7 @@ Item {
                 width: parent.width - 22 * card.s
                 text: mrow.label; elide: Text.ElideRight
                 color: rma.containsMouse ? card.pal.text : card.pal.muted
-                font { family: card.pal.sans; pixelSize: 12.5 * card.s }
+                font { family: card.pal.sans; pixelSize: 12.5 * card.pal.ts }
             }
         }
         MouseArea { id: rma; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: mrow.tap() }

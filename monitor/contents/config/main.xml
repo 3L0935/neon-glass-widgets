@@ -13,6 +13,9 @@
         <entry name="showGpu" type="Bool"><default>true</default></entry>
         <entry name="showLoadGraph" type="Bool"><default>true</default></entry>
         <entry name="historySeconds" type="Int"><default>60</default></entry>
+        <!-- big number of each ring: usage (false) or temperature (true); click a ring to switch -->
+        <entry name="cpuShowTemp" type="Bool"><default>false</default></entry>
+        <entry name="gpuShowTemp" type="Bool"><default>false</default></entry>
         <entry name="showRam" type="Bool"><default>true</default></entry>
         <entry name="showVram" type="Bool"><default>true</default></entry>
     </group>
@@ -29,6 +32,8 @@
         <entry name="edgeColor" type="Color"><default>#8c82e6</default></entry>
         <entry name="edgeOpacity" type="Double"><default>0.20</default></entry>
         <entry name="cornerRadius" type="Int"><default>12</default></entry>
+        <!-- pixel size of the labels set into the top edge, the same on every widget whatever its size -->
+        <entry name="labelSize" type="Int"><default>17</default></entry>
         <entry name="sansFont" type="String"><default></default></entry>
         <entry name="monoFont" type="String"><default></default></entry>
         <!-- path of the image drawn (blurred) under the card; empty = plain glass -->

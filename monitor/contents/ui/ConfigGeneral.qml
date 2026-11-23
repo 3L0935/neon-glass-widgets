@@ -12,6 +12,8 @@ KCM.SimpleKCM {
     property alias cfg_showLoadGraph: showLoadGraph.checked
     property alias cfg_historySeconds: historySeconds.value
     property alias cfg_showRam: showRam.checked
+    property alias cfg_cpuShowTemp: cpuShowTemp.checked
+    property alias cfg_gpuShowTemp: gpuShowTemp.checked
     property alias cfg_showVram: showVram.checked
 
     Kirigami.FormLayout {
@@ -25,6 +27,10 @@ KCM.SimpleKCM {
         QQC2.CheckBox { id: showLoadGraph; text: i18n("Load history graph") }
         QQC2.CheckBox { id: showRam; text: i18n("RAM bar") }
         QQC2.CheckBox { id: showVram; text: i18n("VRAM bar"); enabled: showGpu.checked }
+
+        Kirigami.Separator { Kirigami.FormData.isSection: true; Kirigami.FormData.label: i18n("Rings") }
+        QQC2.CheckBox { id: cpuShowTemp; Kirigami.FormData.label: i18n("Big number:"); text: i18n("CPU temperature instead of usage (or click the ring)") }
+        QQC2.CheckBox { id: gpuShowTemp; text: i18n("GPU temperature instead of usage"); enabled: showGpu.checked }
 
         Kirigami.Separator { Kirigami.FormData.isSection: true; Kirigami.FormData.label: i18n("Sensors") }
         QQC2.SpinBox {

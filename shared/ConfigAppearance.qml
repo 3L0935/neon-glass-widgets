@@ -21,6 +21,7 @@ KCM.SimpleKCM {
     property alias cfg_glassOpacity: glassOpacity.value
     property alias cfg_edgeOpacity: edgeOpacity.value
     property alias cfg_cornerRadius: cornerRadius.value
+    property alias cfg_labelSize: labelSize.value
     property alias cfg_sansFont: sansFont.text
     property alias cfg_monoFont: monoFont.text
     property alias cfg_backgroundImage: backgroundImage.text
@@ -31,7 +32,7 @@ KCM.SimpleKCM {
         accent.color = "#46b5e7"; secondary.color = "#a55ae9"; tertiary.color = "#e45ad8"
         textColor.color = "#e8e6ff"; muted.color = "#9a94d0"; faint.color = "#5d579a"
         glass.color = "#120f2e"; edge.color = "#8c82e6"
-        glassOpacity.value = 0.62; edgeOpacity.value = 0.20; cornerRadius.value = 12
+        glassOpacity.value = 0.62; edgeOpacity.value = 0.20; cornerRadius.value = 12; labelSize.value = 17
     }
 
     Kirigami.FormLayout {
@@ -62,6 +63,7 @@ KCM.SimpleKCM {
             QQC2.Label { text: Math.round(edgeOpacity.value * 100) + " %" }
         }
         QQC2.SpinBox { id: cornerRadius; Kirigami.FormData.label: i18n("Corner radius:"); from: 0; to: 32 }
+        QQC2.SpinBox { id: labelSize; Kirigami.FormData.label: i18n("Text size:"); from: 8; to: 24 }
 
         Kirigami.Separator { Kirigami.FormData.isSection: true; Kirigami.FormData.label: i18n("Fonts") }
         QQC2.TextField {

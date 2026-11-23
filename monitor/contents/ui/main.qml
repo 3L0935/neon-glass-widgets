@@ -98,13 +98,13 @@ PlasmoidItem {
                 text: root.cfg.title + (root.cfg.showHostname
                       ? " <font color='" + pal.faint + "'>· </font><font color='" + pal.muted + "'>" + (hostname.value || "localhost") + "</font>" : "")
                 color: pal.accent3
-                font { family: pal.mono; pixelSize: 11.5 * full.s; letterSpacing: 0.6 }
+                font { family: pal.mono; pixelSize: pal.labelSize; letterSpacing: 0.6 }
             }
             rightLabelVisible: root.cfg.showUptime
             rightLabel: Text {
                 text: root.fmtUptime(uptime.value)
                 color: pal.muted
-                font { family: pal.mono; pixelSize: 11 * full.s }
+                font { family: pal.mono; pixelSize: pal.labelSize * 0.96 }
             }
 
             ColumnLayout {
@@ -119,15 +119,19 @@ PlasmoidItem {
                     Ring {
                         Layout.fillWidth: true; Layout.fillHeight: true
                         label: "CPU"; accent: pal.accent
-                        value: root.num(cpuUsage.value)
-                        detail: "<b><font color='" + pal.accent + "'>" + Math.round(root.cpuTempS) + "°C</font></b> · " + root.ghz(root.cpuFreqS)
+                        showTemp: root.cfg.cpuShowTemp
+                        onToggled: Plasmoid.configuration.cpuShowTemp = !Plasmoid.configuration.cpuShowTemp
+                        value: showTemp ? root.cpuTempS : root.num(cpuUsage.value)
+                        detail: "<b><font color='" + pal.accent + "'>" + (showTemp ? Math.round(root.num(cpuUsage.value)) + "%" : Math.round(root.cpuTempS) + "°C") + "</font></b> · " + root.ghz(root.cpuFreqS)
                     }
                     Ring {
                         visible: root.showGpu
                         Layout.fillWidth: true; Layout.fillHeight: true
                         label: "GPU"; accent: pal.accent2
-                        value: root.num(gpuUsage.value)
-                        detail: "<b><font color='" + pal.accent2 + "'>" + Math.round(root.gpuTempS) + "°C</font></b> · " + root.ghz(root.gpuFreqS)
+                        showTemp: root.cfg.gpuShowTemp
+                        onToggled: Plasmoid.configuration.gpuShowTemp = !Plasmoid.configuration.gpuShowTemp
+                        value: showTemp ? root.gpuTempS : root.num(gpuUsage.value)
+                        detail: "<b><font color='" + pal.accent2 + "'>" + (showTemp ? Math.round(root.num(gpuUsage.value)) + "%" : Math.round(root.gpuTempS) + "°C") + "</font></b> · " + root.ghz(root.gpuFreqS)
                     }
                 }
 
@@ -141,13 +145,13 @@ PlasmoidItem {
                         Layout.fillWidth: true
                         Text {
                             text: "LOAD · " + root.historyLength + "s · 0–" + Math.round(root.scaleTarget) + "%"
-                            color: pal.faint; font { family: pal.mono; pixelSize: 10 * full.s; letterSpacing: 1.4 }
+                            color: pal.faint; font { family: pal.mono; pixelSize: 10 * pal.ts; letterSpacing: 1.4 }
                         }
                         Item { Layout.fillWidth: true }
                         Text {
                             textFormat: Text.StyledText
                             text: "<font color='" + pal.accent + "'>━ cpu</font>" + (root.showGpu ? "  <font color='" + pal.accent2 + "'>━ gpu</font>" : "")
-                            font { family: pal.mono; pixelSize: 10 * full.s; letterSpacing: 1.4 }
+                            font { family: pal.mono; pixelSize: 10 * pal.ts; letterSpacing: 1.4 }
                         }
                     }
                     Canvas {
@@ -221,6 +225,11 @@ PlasmoidItem {
         property color accent
         property real value
         property string detail
+        // click the ring: switch the big number between usage and temperature
+        property bool showTemp: false
+        signal toggled()
+        HoverHandler { cursorShape: Qt.PointingHandCursor }
+        TapHandler { onTapped: ring.toggled() }
         // eased copy of the sensor value: glides between 1 s samples
         property real shown: value
         Behavior on shown { NumberAnimation { duration: 950; easing.type: Easing.OutCubic } }
@@ -253,14 +262,14 @@ PlasmoidItem {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: ring.label; color: pal.muted
-                font { family: pal.mono; pixelSize: Math.max(8, arc.size * 0.075); letterSpacing: 2 }
+                font { family: pal.mono; pixelSize: 10 * pal.ts; letterSpacing: 2 }
             }
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 textFormat: Text.StyledText
-                text: Math.round(ring.shown) + "<font size='2' color='" + pal.muted + "'>%</font>"
+                text: Math.round(ring.shown) + "<font size='2' color='" + pal.muted + "'>" + (ring.showTemp ? "°C" : "%") + "</font>"
                 color: pal.text
-                font { family: pal.sans; pixelSize: arc.size * 0.26; weight: Font.ExtraLight }
+                font { family: pal.mono; pixelSize: arc.size * 0.24; weight: Font.ExtraLight }
                 layer.enabled: true
                 layer.effect: MultiEffect {
                     shadowEnabled: true; shadowColor: ring.accent
@@ -277,7 +286,7 @@ PlasmoidItem {
                 fontSizeMode: Text.HorizontalFit
                 minimumPixelSize: 7
                 text: ring.detail; color: pal.muted
-                font { family: pal.mono; pixelSize: Math.max(8, arc.size * 0.072) }
+                font { family: pal.mono; pixelSize: 9.8 * pal.ts }
             }
         }
     }
@@ -298,7 +307,7 @@ PlasmoidItem {
         Text {
             Layout.preferredWidth: 38 * mem.s
             text: mem.label; color: pal.muted
-            font { family: pal.mono; pixelSize: 12 * mem.s; letterSpacing: 0.7 }
+            font { family: pal.mono; pixelSize: 12 * pal.ts; letterSpacing: 0.7 }
         }
         Row {
             id: segRow
@@ -332,7 +341,7 @@ PlasmoidItem {
             textFormat: Text.StyledText
             text: mem.usedS.toFixed(1) + "<font color='" + pal.faint + "'> / " + Math.ceil(mem.total - 0.05) + "G</font>"
             color: pal.text
-            font { family: pal.mono; pixelSize: 12 * mem.s }
+            font { family: pal.mono; pixelSize: 12 * pal.ts }
         }
     }
 }

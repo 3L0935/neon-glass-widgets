@@ -7,6 +7,9 @@
         <entry name="showGpu" type="Bool"><default>true</default></entry>
         <entry name="showLoadGraph" type="Bool"><default>true</default></entry>
         <entry name="historySeconds" type="Int"><default>60</default></entry>
+        <!-- big number of each ring: usage (false) or temperature (true); click a ring to switch -->
+        <entry name="cpuShowTemp" type="Bool"><default>false</default></entry>
+        <entry name="gpuShowTemp" type="Bool"><default>false</default></entry>
         <entry name="showRam" type="Bool"><default>true</default></entry>
         <entry name="showVram" type="Bool"><default>true</default></entry>
     </group>

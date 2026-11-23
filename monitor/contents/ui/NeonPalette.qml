@@ -18,6 +18,9 @@ QtObject {
     readonly property real radius: cfg.cornerRadius
     readonly property url backgroundImage: cfg.backgroundImage ? toUrl(cfg.backgroundImage) : ""
     readonly property real blurAmount: cfg.blurAmount
+    readonly property real labelSize: cfg.labelSize > 0 ? cfg.labelSize : 17
+    // text scale shared by every widget (the big numbers still follow the widget size)
+    readonly property real ts: labelSize / 11.5
 
     readonly property string sans: pick(cfg.sansFont, ["Inter", "Inter Variable"], Qt.application.font.family)
     readonly property string mono: pick(cfg.monoFont, ["JetBrains Mono", "JetBrainsMono Nerd Font", "Hack", "DejaVu Sans Mono"], "monospace")
