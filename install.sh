@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Install (or update) the Neon Glass widgets for the current user.
-#   ./install.sh            both widgets
-#   ./install.sh player     only one of them (player | monitor)
+#   ./install.sh            all widgets
+#   ./install.sh player     only one of them (player | monitor | clock)
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-pkgs=("$@"); [ $# -eq 0 ] && pkgs=(player monitor)
+pkgs=("$@"); [ $# -eq 0 ] && pkgs=(player monitor clock)
 for pkg in "${pkgs[@]}"; do
   id="$(sed -n 's/.*"Id": "\(.*\)".*/\1/p' "$ROOT/$pkg/metadata.json")"
   if kpackagetool6 -t Plasma/Applet -l 2>/dev/null | grep -qx "$id"; then

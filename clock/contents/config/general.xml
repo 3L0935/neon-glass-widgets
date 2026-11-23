@@ -1,0 +1,22 @@
+    <group name="General">
+        <entry name="title" type="String"><default>clock</default></entry>
+        <!-- right label in the top edge: sun | date | none -->
+        <entry name="rightLabel" type="String"><default>sun</default></entry>
+        <entry name="use24h" type="Bool"><default>true</default></entry>
+        <entry name="showSeconds" type="Bool"><default>true</default></entry>
+        <!-- empty = system locale -->
+        <entry name="locale" type="String"><default></default></entry>
+        <entry name="dateFormat" type="String"><default>ddd, MMM d</default></entry>
+        <entry name="lowercaseDate" type="Bool"><default>true</default></entry>
+        <entry name="showWeekDay" type="Bool"><default>true</default></entry>
+        <!-- empty = numbers font from Appearance -->
+        <entry name="digitsFont" type="String"><default></default></entry>
+        <entry name="digitsWeight" type="Int"><default>200</default></entry>
+        <entry name="showSun" type="Bool"><default>true</default></entry>
+        <entry name="latitude" type="Double"><default>48.86</default></entry>
+        <entry name="longitude" type="Double"><default>2.35</default></entry>
+        <entry name="showTicks" type="Bool"><default>true</default></entry>
+        <entry name="showZones" type="Bool"><default>true</default></entry>
+        <!-- comma separated, "Area/City=LABEL" or just "UTC" -->
+        <entry name="zones" type="String"><default>America/Los_Angeles=LA, America/New_York=NYC, UTC, Asia/Tokyo=TYO</default></entry>
+    </group>

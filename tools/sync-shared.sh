@@ -4,7 +4,7 @@
 # Run it after editing anything in shared/ or a package's config/general.xml.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-for pkg in player monitor; do
+for pkg in player monitor clock; do
   ui="$ROOT/$pkg/contents/ui"; cfg="$ROOT/$pkg/contents/config"
   [ -f "$cfg/general.xml" ] || { echo "skip $pkg (no config/general.xml yet)"; continue; }
   cp "$ROOT/shared/NeonPalette.qml" "$ROOT/shared/GlassCard.qml" "$ROOT/shared/ConfigAppearance.qml" "$ui/"

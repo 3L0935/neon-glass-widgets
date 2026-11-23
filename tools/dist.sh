@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 "$ROOT/tools/sync-shared.sh" >/dev/null
 mkdir -p "$ROOT/dist"
-for pkg in player monitor; do
+for pkg in player monitor clock; do
   version="$(sed -n 's/.*"Version": "\(.*\)".*/\1/p' "$ROOT/$pkg/metadata.json")"
   out="$ROOT/dist/neon-glass-$pkg-$version.plasmoid"
   rm -f "$out"

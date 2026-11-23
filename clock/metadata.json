@@ -1,0 +1,15 @@
+{
+    "KPlugin": {
+        "Authors": [{ "Name": "3L0_", "Email": "46246017+3L0935@users.noreply.github.com" }],
+        "Category": "Date and Time",
+        "Description": "Clock with the sun's path over the day, a seconds strip and world times on a neon glass card",
+        "Icon": "preferences-system-time",
+        "Id": "org.neonglass.clock",
+        "License": "MIT",
+        "Name": "Neon Glass Clock",
+        "Version": "1.0.0",
+        "Website": "https://github.com/3L0935/neon-glass-widgets"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "KPackageStructure": "Plasma/Applet"
+}

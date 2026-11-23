@@ -1,13 +1,16 @@
 # Neon Glass widgets
 
-Two KDE Plasma 6 widgets with a dark glass look and thin neon accents. They pair with the [NeonGlass icon theme](https://github.com/3L0935/neon-glass-icons). Every color, the fonts and the glass are configurable from the widget settings, no code to edit.
+Three KDE Plasma 6 widgets with a dark glass look and thin neon accents. They pair with the [NeonGlass icon theme](https://github.com/3L0935/neon-glass-icons). Every color, the fonts and the glass are configurable from the widget settings, no code to edit.
 
 | Neon Glass Monitor | Neon Glass Player |
 |---|---|
 | ![Monitor](screenshots/monitor.png) | ![Player](screenshots/player.png) |
 
-- **Neon Glass Monitor**: CPU and GPU usage rings (temperature and clock speed), a smooth load-history graph, RAM and VRAM bars.
+![Neon Glass Clock](screenshots/clock.png)
+
+- **Neon Glass Monitor**: CPU and GPU usage rings (temperature and clock speed), a smooth load-history graph, RAM and VRAM bars. Click a ring to show its temperature instead of its usage.
 - **Neon Glass Player**: a now-playing card for any MPRIS player: music apps, browsers, Spotify, Tauon, mpv… The taskbar version shows the cover, the title, a thin progress line and the transport buttons, and opens the card on click.
+- **Neon Glass Clock**: the sun's path over the day (sunrise and sunset computed from your latitude and longitude, no internet needed), the time, a seconds strip and world times. Click the time to switch between 24 h and 12 h, click the date to open the month calendar.
 
 ## Install
 
@@ -16,7 +19,7 @@ Needs Plasma 6.
 ```sh
 git clone https://github.com/3L0935/neon-glass-widgets
 cd neon-glass-widgets
-./install.sh            # both widgets; or: ./install.sh player
+./install.sh            # all widgets; or: ./install.sh player
 ```
 
 Then right click on the desktop or a panel → **Add Widgets…** → search "Neon Glass".
@@ -27,16 +30,25 @@ To update: `git pull && ./install.sh`, then restart Plasma (`systemctl --user re
 
 Right click a widget → **Configure…**
 
-**Appearance** (same page on both widgets)
+**Appearance** (same page on every widget)
 - **Colors**: accent, secondary and third accents, and three text shades. There's a button to go back to the default palette.
 - **Glass**: tint, opacity, border color and opacity, corner radius.
 - **Fonts**: text font and numbers font. They default to Inter and JetBrains Mono when installed, else to your system fonts.
+- **Text size**: one size for the labels and texts of every widget, so they match side by side whatever each widget's size (only the big numbers follow the widget size).
 - **Blur behind**: KWin can't blur what is under a desktop widget. Pick the same image as your wallpaper (in "Scaled and cropped" mode) and the widget blurs it under itself, lined up with the real wallpaper. Leave it empty for plain translucent glass, and raise the glass opacity a bit.
 
 **Monitor**
 - Title, host name and uptime in the header.
 - Which sections to show: GPU ring, load graph, RAM, VRAM.
 - Which GPU to read (`gpu0`, `gpu1`… same numbering as System Monitor) and the graph length.
+- Big number of each ring: usage or temperature (clicking the ring switches it too).
+
+**Clock**
+- Title, and the label on the right of the top edge: daylight / night, the date, or nothing.
+- 24 h or 12 h, seconds, digits font and weight (default: the numbers font, extra light).
+- Date language (empty = system), date format (Qt format such as `ddd, MMM d`), lowercase, week number.
+- Sun path on/off, latitude and longitude (decimal degrees, north and east positive).
+- Seconds strip and world times on/off; the time zones as `Area/City=LABEL`, comma separated (`America/New_York=NYC, Asia/Tokyo=TYO, UTC`).
 
 **Player**
 - Title, and the player switcher shown when several players run (`auto` follows the one that's playing).
