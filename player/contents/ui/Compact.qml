@@ -29,7 +29,7 @@ Item {
         radius: 7
         color: compact.pal.withAlpha(compact.pal.glass, Math.max(0.55, compact.pal.glass.a))
         border.color: compact.pal.edge; border.width: 1
-        visible: root.has
+        visible: root.has && Plasmoid.configuration.panelFrame
     }
 
     RowLayout {

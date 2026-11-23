@@ -14,11 +14,13 @@ KCM.SimpleKCM {
     property alias cfg_helperCommand: helperCommand.text
     property alias cfg_tuiCommand: tuiCommand.text
     property alias cfg_showUpNext: showUpNext.checked
+    property alias cfg_panelFrame: panelFrame.checked
 
     Kirigami.FormLayout {
         Kirigami.Separator { Kirigami.FormData.isSection: true; Kirigami.FormData.label: i18n("Card") }
         QQC2.TextField { id: title; Kirigami.FormData.label: i18n("Title:") }
         QQC2.CheckBox { id: showSourceSwitcher; text: i18n("Show the player switcher when several players run") }
+        QQC2.CheckBox { id: panelFrame; text: i18n("Glass frame behind the panel version") }
         QQC2.ComboBox {
             id: iconStyle
             Kirigami.FormData.label: i18n("Icons:")

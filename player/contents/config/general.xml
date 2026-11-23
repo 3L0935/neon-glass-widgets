@@ -11,4 +11,6 @@
         <entry name="helperCommand" type="String"><default>neonglass-player</default></entry>
         <entry name="tuiCommand" type="String"><default>kitty -e music-cli</default></entry>
         <entry name="showUpNext" type="Bool"><default>true</default></entry>
+        <!-- draw the rounded glass frame behind the panel version (turn off inside Panel Colorizer islands) -->
+        <entry name="panelFrame" type="Bool"><default>true</default></entry>
     </group>
